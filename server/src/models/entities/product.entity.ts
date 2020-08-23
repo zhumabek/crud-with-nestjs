@@ -6,7 +6,7 @@ export class Product extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column("varchar", { length: 20 })
+    @Column("varchar", { unique: true, length: 20 })
     title: string;
 
     @Column("varchar", { length: 200 })
