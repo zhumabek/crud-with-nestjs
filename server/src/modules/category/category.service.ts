@@ -3,6 +3,7 @@ import {CreateCategoryDto} from "./dto/create-category.dto";
 import {Category} from "../../models/entities/category.entity";
 import {CategoryRepository} from "../../models/repositories/category.repository";
 import {InjectRepository} from "@nestjs/typeorm";
+import {CategoryListingsDataDto} from "./dto/category-listings-data.dto";
 
 @Injectable()
 export class CategoryService {
@@ -34,8 +35,13 @@ export class CategoryService {
         return category;
     }
 
-    async getCategories(): Promise<Category[]> {
-        return await this.categoryRepository.find();
+    async getCategories( page = 1, limit = 10 ): Promise<CategoryListingsDataDto> {
+        const [result, total] = await this.categoryRepository.findAndCount({
+            take: limit,
+            skip: page > 0 ? (page - 1) * limit : 0
+         });
+
+         return { result, total };
     }
 
     async updateCategory(id: number, createCategoryDto: CreateCategoryDto): Promise<Category> {

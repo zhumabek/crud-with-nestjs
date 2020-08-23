@@ -1,7 +1,20 @@
-import {Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UsePipes, ValidationPipe} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    ParseIntPipe,
+    Post,
+    Put,
+    Query,
+    UsePipes,
+    ValidationPipe
+} from '@nestjs/common';
 import {CategoryService} from "./category.service";
 import {CreateCategoryDto} from "./dto/create-category.dto";
 import {Category} from "../../models/entities/category.entity";
+import {CategoryListingsDataDto} from "./dto/category-listings-data.dto";
 
 @Controller("categories")
 export class CategoryController {
@@ -19,8 +32,11 @@ export class CategoryController {
     }
 
     @Get()
-    getCategories(): Promise<Category[]> {
-        return this.categoryService.getCategories()
+    getCategories(
+        @Query('page') page: number | undefined,
+        @Query('limit') limit: number | undefined,
+    ): Promise<CategoryListingsDataDto> {
+        return this.categoryService.getCategories(page, limit)
     }
 
     @Put(":id")
