@@ -6,7 +6,7 @@ export class Category extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column("varchar")
+    @Column("varchar", { unique: true })
     title: string;
 
 
