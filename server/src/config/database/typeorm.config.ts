@@ -1,4 +1,6 @@
 import {TypeOrmModuleOptions} from "@nestjs/typeorm";
+import {Category} from "../../models/entities/category.entity";
+import {Product} from "../../models/entities/product.entity";
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
     type: 'postgres',
@@ -7,6 +9,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     username: process.env.NODE_ENV === "production" ? process.env.DB_USER : 'postgres',
     password: process.env.NODE_ENV === "production" ? process.env.DB_SECRET : 'postgres',
     database: process.env.NODE_ENV === "production" ? process.env.DB_NAME : 'crud-app-with-nest',
-    entities: [__dirname + "../../entities/**/*.ts"],
+    entities: [Category, Product],
     synchronize: true,
 }
