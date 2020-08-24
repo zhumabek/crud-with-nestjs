@@ -14,7 +14,6 @@ import {
 import { ProductService } from './product.service';
 import {ProductDto} from "./dto/product.dto";
 import {Product} from "../../models/entities/product.entity";
-import {CategoryListingsDataDto} from "../category/dto/category-listings-data.dto";
 import {ProductListingsData} from "./dto/product-listings-data.dto";
 
 @Controller("products")
@@ -47,5 +46,10 @@ export class ProductController {
       @Body() productDto: ProductDto
   ): Promise<Product> {
     return this.productService.updateProduct(id, productDto)
+  }
+
+  @Delete(":id")
+  deleteProduct(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.productService.deleteProduct(id)
   }
 }

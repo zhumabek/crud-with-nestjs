@@ -5,7 +5,6 @@ import {ProductDto} from "./dto/product.dto";
 import {Product} from "../../models/entities/product.entity";
 import {Cloudinary} from "../../lib/api/Cloudinary";
 import {CategoryRepository} from "../../models/repositories/category.repository";
-import {CategoryListingsDataDto} from "../category/dto/category-listings-data.dto";
 import {ProductListingsData} from "./dto/product-listings-data.dto";
 
 @Injectable()
@@ -80,5 +79,12 @@ export class ProductService {
     product.category = await this.categoryRepository.findOne(categoryId);
     await product.save();
     return product;
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    const product =  await this.productRepository.delete(id);
+    if(!product){
+      throw new NotFoundException("Product was not deleted!");
+    }
   }
 }
