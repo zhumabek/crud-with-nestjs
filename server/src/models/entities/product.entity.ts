@@ -22,7 +22,8 @@ export class Product extends BaseEntity {
     price: number;
 
     @ManyToOne(type => Category, category => category.products, {
-        eager: true
+        eager: true,
+        onDelete: "CASCADE"
     })
     @JoinTable()
     category: Category;
