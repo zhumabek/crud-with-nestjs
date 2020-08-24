@@ -6,13 +6,16 @@ import {Categories} from "./sections/Categories";
 import {NotFound} from "./sections/NotFound";
 import {Box, Container} from "@material-ui/core";
 import AppNavigation from "./components/AppNavigation";
+import AppBar from "@material-ui/core/AppBar";
 
 function App() {
   return (
     <Container maxWidth="md">
       <BrowserRouter>
-          <AppNavigation/>
-          <Box mt={10}>
+          <AppBar position="fixed">
+                  <AppNavigation/>
+          </AppBar>
+          <Box mt={12}>
               <Switch>
                       <Route exact path="/" component={Home} />
                       <Route exact path="/products" component={Products} />
