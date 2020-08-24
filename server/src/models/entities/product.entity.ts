@@ -1,4 +1,4 @@
-import {Entity, BaseEntity, Column, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Entity, BaseEntity, Column, ManyToOne, PrimaryGeneratedColumn, JoinTable} from "typeorm";
 import {Category} from "./category.entity";
 
 @Entity("products")
@@ -21,6 +21,9 @@ export class Product extends BaseEntity {
     @Column("integer")
     price: number;
 
-    @ManyToOne(type => Category, category => category.products)
+    @ManyToOne(type => Category, category => category.products, {
+        eager: true
+    })
+    @JoinTable()
     category: Category;
 }
