@@ -5,6 +5,8 @@ import {ProductDto} from "./dto/product.dto";
 import {Product} from "../../models/entities/product.entity";
 import {Cloudinary} from "../../lib/api/Cloudinary";
 import {CategoryRepository} from "../../models/repositories/category.repository";
+import {CategoryListingsDataDto} from "../category/dto/category-listings-data.dto";
+import {ProductListingsData} from "./dto/product-listings-data.dto";
 
 @Injectable()
 export class ProductService {
@@ -45,6 +47,15 @@ export class ProductService {
     }
 
     return product;
+  }
+
+  async getProducts( page = 1, limit = 10 ): Promise<ProductListingsData> {
+    const [result, total] = await this.productRepository.findAndCount({
+      take: limit,
+      skip: page > 0 ? (page - 1) * limit : 0
+    });
+
+    return { result, total };
   }
 
   async updateProduct(id: number, updateProductDto: ProductDto): Promise<Product> {
