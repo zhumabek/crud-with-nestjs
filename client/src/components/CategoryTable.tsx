@@ -7,22 +7,22 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {Avatar, Box, Button, TablePagination, Typography} from "@material-ui/core";
-import {ProductData} from "../lib/types";
+import {Box, Button, TablePagination, Typography} from "@material-ui/core";
+import { CategoryData } from "../lib/types";
 import axios from "../lib/axios";
 import {useHistory} from "react-router-dom";
 
-interface ResponseData {
-    result: ProductData[];
+interface GetCategoriesResponseData {
+    result: CategoryData[];
     total: number;
 }
 
 const rowsPerPageOptions = [5, 10, 25];
 
-const ProductTable = () => {
+const CategoryTable = () => {
     const history = useHistory();
     const classes = useStyles();
-    const [products, setProducts] = useState<ProductData[]>([]);
+    const [categories, setCategories] = useState<CategoryData[]>([]);
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
@@ -35,19 +35,19 @@ const ProductTable = () => {
         setRowsPerPage(+event.target.value);
     };
 
-    const deleteProduct = async (id: number) => {
+    const deleteCategory = async (id: number) => {
         try {
-            const { message } = await axios.delete(`/products/${id}`);
-            getProducts(page, rowsPerPage);
+            const { message } = await axios.delete(`/categories/${id}`);
+            getCategories(page, rowsPerPage);
         } catch (e) {
             console.log(e)
         }
     }
 
-    const getProducts = async (page: number, limit: number) => {
+    const getCategories = async (page: number, limit: number) => {
         try {
-            const { result, total } : ResponseData = await axios.get(`/products?page=${page}&limit=${limit}`);
-            setProducts(result);
+            const { result, total } : GetCategoriesResponseData = await axios.get(`/categories?page=${page}&limit=${limit}`);
+            setCategories(result);
             setTotal(total);
         } catch (e) {
             console.log(e)
@@ -55,7 +55,7 @@ const ProductTable = () => {
     };
 
     useEffect( () => {
-        getProducts(page, rowsPerPage);
+        getCategories(page, rowsPerPage);
     }, [page, rowsPerPage]);
 
     return (
@@ -66,35 +66,24 @@ const ProductTable = () => {
                         <TableRow>
                             <TableCell>№</TableCell>
                             <TableCell>Title</TableCell>
-                            <TableCell>Description</TableCell>
-                            <TableCell>Image</TableCell>
-                            <TableCell>Category</TableCell>
-                            <TableCell>Price</TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {products.length < 1 ? <Typography variant="h6" component="h6"> No data... </Typography> : null }
-                        {products.map((row) => (
+                        {categories.length < 1 ? <Typography variant="h6" component="h6"> No data... </Typography> : null }
+                        {categories.map((row) => (
                             <TableRow key={row.id}>
                                 <TableCell component="th" scope="row">
                                     {row.id}
                                 </TableCell>
                                 <TableCell>{row.title}</TableCell>
-                                <TableCell>{row.description.substr(0, 40)}</TableCell>
-                                <TableCell>
-                                    <Avatar src={row.image} variant="square" className={classes.largeImage} />
-                                </TableCell>
-                                <TableCell>{row.category && row.category.title}</TableCell>
-                                <TableCell>{row.price}</TableCell>
                                 <TableCell>
                                     <Box display="flex" justifyContent="flex-end">
                                         <Box mr={1}>
                                             <Button variant="outlined"
                                                     size="small"
                                                     color="primary"
-                                                    onClick={() => history.push("/product/" + row.id)}
-                                            >
+                                                    onClick={() => history.push("/category/" + row.id)}>
                                                 edit
                                             </Button>
                                         </Box>
@@ -102,7 +91,7 @@ const ProductTable = () => {
                                             <Button variant="outlined"
                                                     size="small"
                                                     color="secondary"
-                                                    onClick={() => deleteProduct(row.id)}
+                                                    onClick={() => deleteCategory(row.id)}
                                             >
                                                 delete
                                             </Button>
@@ -126,7 +115,7 @@ const ProductTable = () => {
     );
 }
 
-export default ProductTable;
+export default CategoryTable;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

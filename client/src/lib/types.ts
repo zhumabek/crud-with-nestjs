@@ -6,3 +6,8 @@ export interface ProductData {
     image: string;
     category: { id: string; title: string; }
 }
+
+export interface CategoryData {
+    id: number;
+    title: string;
+}
