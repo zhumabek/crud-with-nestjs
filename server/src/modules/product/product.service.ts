@@ -1,38 +1,73 @@
-import {ForbiddenException, Injectable} from '@nestjs/common';
+import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Category} from "../../models/entities/category.entity";
 import {ProductRepository} from "../../models/repositories/product.repository";
-import {CreateProductDto} from "./dto/create-product.dto";
+import {ProductDto} from "./dto/product.dto";
 import {Product} from "../../models/entities/product.entity";
 import {Cloudinary} from "../../lib/api/Cloudinary";
+import {CategoryRepository} from "../../models/repositories/category.repository";
 
 @Injectable()
 export class ProductService {
   constructor(
       @InjectRepository(ProductRepository)
-      private productRepository: ProductRepository
+      private productRepository: ProductRepository,
+      private categoryRepository: CategoryRepository,
+      private cloudinaryApi: Cloudinary
   ) {}
 
-  async createProduct(createProductDto: CreateProductDto): Promise<Product> {
+  async createProduct(createProductDto: ProductDto): Promise<Product> {
     const { title, description, image, price, categoryId } = createProductDto;
-    const existingCategory = await this.productRepository.findOne({title});
+    const existingProduct = await this.productRepository.findOne({title});
 
-    if (existingCategory){
+    if (existingProduct){
       throw new ForbiddenException("Product with this title already exist!")
     }
 
-    const imageUrl = await Cloudinary.upload(image);
+    const { imageUrl, publicId } = await this.cloudinaryApi.upload(image);
 
     const product =  new Product();
     product.title = title;
     product.description = description;
     product.image = imageUrl;
+    product.imagePublicId = publicId;
     product.price = price;
-    product.category = await Category.findOne(categoryId);
+    product.category = await this.categoryRepository.findOne(categoryId);
 
 
     await product.save();
     return product;
   }
 
+  async getProductById(id: number): Promise<Product> {
+    const product =  await this.productRepository.findOne(id);
+    if(!product){
+      throw new NotFoundException("Product with this id not found!");
+    }
+
+    return product;
+  }
+
+  async updateProduct(id: number, updateProductDto: ProductDto): Promise<Product> {
+    const { title, description, image, price, categoryId } = updateProductDto;
+    const product = await this.getProductById(id);
+
+    if (!product){
+      throw new NotFoundException("Product with this id not found!")
+    }
+
+    if (image !== product.image){
+      const {imageUrl, publicId} = await this.cloudinaryApi.update(product.imagePublicId, image);
+
+      product.image = imageUrl;
+      product.imagePublicId = publicId;
+    }
+
+
+    product.title = title;
+    product.description = description;
+    product.price = price;
+    product.category = await this.categoryRepository.findOne(categoryId);
+    await product.save();
+    return product;
+  }
 }

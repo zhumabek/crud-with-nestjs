@@ -15,6 +15,9 @@ export class Product extends BaseEntity {
     @Column("text")
     image: string;
 
+    @Column("varchar")
+    imagePublicId: string;
+
     @Column("integer")
     price: number;
 
