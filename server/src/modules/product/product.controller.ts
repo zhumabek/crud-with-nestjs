@@ -14,7 +14,8 @@ import {
 import { ProductService } from './product.service';
 import {ProductDto} from "./dto/product.dto";
 import {Product} from "../../models/entities/product.entity";
-import {Category} from "../../models/entities/category.entity";
+import {CategoryListingsDataDto} from "../category/dto/category-listings-data.dto";
+import {ProductListingsData} from "./dto/product-listings-data.dto";
 
 @Controller("products")
 export class ProductController {
@@ -29,6 +30,14 @@ export class ProductController {
   @Get(":id")
   getProductById(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productService.getProductById(id)
+  }
+
+  @Get()
+  getProducts(
+      @Query('page') page: number | undefined,
+      @Query('limit') limit: number | undefined,
+  ): Promise<ProductListingsData> {
+    return this.productService.getProducts(page, limit)
   }
 
   @Put(":id")
