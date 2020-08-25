@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, createStyles, Grid, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import CategoryTable from "../components/CategoryTable";
+import CategoryTable from "../../components/CategoryTable";
 import {useHistory} from "react-router-dom";
 export const Categories = () => {
     const history = useHistory();
