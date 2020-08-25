@@ -7,7 +7,7 @@ switch(process.env.REACT_APP_ENV) {
         constants.apiURL = 'http://localhost:8000';
         break;
     case 'production':
-        constants.apiURL = 'http://localhost:8000';
+        constants.apiURL = 'https://crud-with-nestjs.herokuapp.com/';
         break;
 }
 

@@ -43,7 +43,7 @@ export const AddCategory = ({match, history}: RouteComponentProps<MatchParams>) 
         event.preventDefault();
         try {
             if (match.params.id) {
-                await axios.put("/categories" + match.params.id, {title});
+                await axios.put("/categories/" + match.params.id, {title});
             } else {
                 await axios.post("/categories", {title});
             }
